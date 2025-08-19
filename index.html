@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmoTrack + EchoMind AI | Premium Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0a0a0f;
+            --secondary-bg: #141420;
+            --card-bg: #1a1a2e;
+            --accent-bg: #16213e;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: #334155;
+            --glow: rgba(59, 130, 246, 0.3);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        .premium-gradient {
+            background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-link {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-link.active {
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 20px var(--glow);
+            transform: translateX(4px);
+        }
+        
+        .sidebar-link:not(.active):hover {
+            background: var(--accent-bg);
+            color: var(--accent);
+            transform: translateX(2px);
+        }
+        
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .premium-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .premium-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+        }
+        
+        .tech-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        
+        .accordion-content.open {
+            max-height: 2000px;
+        }
+        
+        .phase-button {
+            transition: all 0.3s ease;
+        }
+        
+        .phase-button.selected {
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px var(--glow);
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #8b5cf6);
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+        
+        .code-block {
+            background: var(--primary-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .floating-orb {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-indicator" id="scroll-progress"></div>
+    
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn" class="fixed top-6 left-6 z-50 lg:hidden glass-effect p-3 rounded-xl shadow-xl">
+        <svg class="w-6 h-6 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </button>
+    
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="mobile-menu w-80 glass-effect border-r border-slate-700/50 p-8 fixed h-full z-40 lg:translate-x-0">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 premium-gradient rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    E
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-100">EmoTrack AI</h1>
+                    <p class="text-sm text-slate-400">Premium Blueprint</p>
+                </div>
+            </div>
+            
+            <nav id="sidebar-nav" class="flex flex-col gap-3">
+                <a href="#overview" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="overview">
+                    <span class="text-lg">📖</span>
+                    <div>
+                        <span class="font-medium">Overview</span>
+                        <p class="text-xs text-slate-500">Project vision & goals</p>
+                    </div>
+                </a>
+                <a href="#learning-path" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="learning-path">
+                    <span class="text-lg">🎓</span>
+                    <div>
+                        <span class="font-medium">Learning Path</span>
+                        <p class="text-xs text-slate-500">Skills & resources</p>
+                    </div>
+                </a>
+                <a href="#tech-stack" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="tech-stack">
+                    <span class="text-lg">🛠️</span>
+                    <div>
+                        <span class="font-medium">Tech Stack</span>
+                        <p class="text-xs text-slate-500">Architecture & tools</p>
+                    </div>
+                </a>
+                <a href="#roadmap" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="roadmap">
+                    <span class="text-lg">🗺️</span>
+                    <div>
+                        <span class="font-medium">Roadmap</span>
+                        <p class="text-xs text-slate-500">Development phases</p>
+                    </div>
+                </a>
+                <a href="#team" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="team">
+                    <span class="text-lg">👥</span>
+                    <div>
+                        <span class="font-medium">Team & Workflow</span>
+                        <p class="text-xs text-slate-500">Collaboration strategy</p>
+                    </div>
+                </a>
+                <a href="#deployment" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="deployment">
+                    <span class="text-lg">🚀</span>
+                    <div>
+                        <span class="font-medium">Deployment</span>
+                        <p class="text-xs text-slate-500">Launch & automation</p>
+                    </div>
+                </a>
+                <a href="#best-practices" class="sidebar-link p-4 rounded-xl flex items-center gap-4 text-slate-300" data-section="best-practices">
+                    <span class="text-lg">✅</span>
+                    <div>
+                        <span class="font-medium">Best Practices</span>
+                        <p class="text-xs text-slate-500">Engineering excellence</p>
+                    </div>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Overlay for mobile -->
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-75 z-30 hidden lg:hidden backdrop-blur-sm"></div>
+        
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-80 p-6 md:p-12">
+            <div class="max-w-7xl mx-auto">
+                
+                <!-- Section: Overview -->
+                <section id="overview" class="content-section active">
+                    <div class="mb-12">
+                        <h2 class="text-5xl font-bold text-slate-100 mb-6">
+                            EmoTrack + EchoMind AI Blueprint
+                        </h2>
+                        <p class="text-xl text-slate-300 leading-relaxed max-w-4xl">
+                            A comprehensive technical and strategic blueprint for building a production-level, scalable mental health application. 
+                            This interactive document guides a two-person developer team from initial learning to final deployment, 
+                            breaking down the complex project into manageable stages and clear architectural decisions.
+                        </p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8 mb-12">
+                        <div class="premium-card p-8 hover:scale-105 transition-transform duration-300">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                    <span class="text-blue-400 text-2xl">🎯</span>
+                                </div>
+                                <h3 class="font-bold text-2xl text-blue-400">Project Vision</h3>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed">
+                                To create a unique application that combines emotional state tracking (EmoTrack) with AI-driven, 
+                                music-based therapeutic interaction (EchoMind AI), offering users a powerful tool for mental wellness.
+                            </p>
+                        </div>
+                        
+                        <div class="premium-card p-8 hover:scale-105 transition-transform duration-300">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                                    <span class="text-purple-400 text-2xl">🏗️</span>
+                                </div>
+                                <h3 class="font-bold text-2xl text-purple-400">Architectural Philosophy</h3>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed">
+                                The architecture prioritizes developer velocity, long-term scalability, and operational simplicity. 
+                                By leveraging modern frameworks and Backend-as-a-Service platforms, a small team can build a 
+                                sophisticated, robust, and maintainable product.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="premium-card p-8 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
+                        <h3 class="text-2xl font-bold text-slate-100 mb-6">Key Features</h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
+                                <span class="text-3xl">📊</span>
+                                <div>
+                                    <h4 class="font-semibold text-slate-200">EmoTrack</h4>
+                                    <p class="text-sm text-slate-400">Mood logging & analytics</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
+                                <span class="text-3xl">🎵</span>
+                                <div>
+                                    <h4 class="font-semibold text-slate-200">EchoMind AI</h4>
+                                    <p class="text-sm text-slate-400">AI-powered music therapy</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
+                                <span class="text-3xl">🔒</span>
+                                <div>
+                                    <h4 class="font-semibold text-slate-200">Enterprise Security</h4>
+                                    <p class="text-sm text-slate-400">Production-grade protection</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Section: Learning Path -->
+                <section id="learning-path" class="content-section">
+                    <h2 class="text-5xl font-bold text-slate-100 mb-6">Foundation: Skills & Learning Path</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        Before writing code, a solid foundation of knowledge is the most critical investment. 
+                        This curated learning path is designed to counteract "tutorial hell" by prioritizing project-based learning, 
+                        building the durable, real-world skills needed for this project.
+                    </p>
+                    
+                    <div class="premium-card p-6 mb-12 border-amber-500/30 bg-amber-900/10">
+                        <div class="flex items-start gap-4">
+                            <span class="text-amber-400 text-2xl">⚠️</span>
+                            <div>
+                                <h3 class="font-semibold text-amber-300 text-lg mb-2">Avoiding Tutorial Hell</h3>
+                                <p class="text-amber-200/80">Focus on building real projects, not just watching tutorials. Each skill should be applied immediately in practical exercises.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="learning-path-container" class="relative border-l-4 border-blue-500/50 ml-6 pl-12 py-6 space-y-12"></div>
+                </section>
+                
+                <!-- Section: Tech Stack -->
+                <section id="tech-stack" class="content-section">
+                    <h2 class="text-5xl font-bold text-slate-100 mb-6">Architectural Blueprint & Tech Stack</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        The technology stack is a carefully curated set of tools chosen to work in concert, 
+                        balancing cutting-edge performance with developer-friendly ergonomics. Each component 
+                        plays a specific role in creating a cohesive and powerful application. Click on any technology to learn more about its role and rationale.
+                    </p>
+                    <div id="tech-stack-container" class="space-y-12"></div>
+                </section>
+                
+                <!-- Section: Development Roadmap -->
+                <section id="roadmap" class="content-section">
+                    <h2 class="text-5xl font-bold text-slate-100 mb-6">Development Roadmap</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        This phased roadmap breaks the project into manageable milestones. This iterative approach 
+                        allows the team to build momentum, test assumptions early, and maintain focus. Select a phase 
+                        from the chart or the list below to see its detailed objectives and tasks.
+                    </p>
+                    
+                    <div class="premium-card p-8 mb-12">
+                        <div class="chart-container" style="position: relative; width: 100%; max-width: 900px; margin: 0 auto; height: 400px;">
+                            <canvas id="roadmap-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-12 gap-8">
+                        <div id="roadmap-list" class="md:col-span-4 space-y-3"></div>
+                        <div id="roadmap-details" class="md:col-span-8 premium-card p-8 min-h-[500px]"></div>
+                    </div>
+                </section>
+                
+                <!-- Section: Team & Workflow -->
+                <section id="team" class="content-section">
+                    <h2 class="text-5xl font-bold text-slate-100 mb-6">Team Structure & Workflow</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        For a two-person team, clear roles and a disciplined workflow are essential for efficiency and code quality. 
+                        This structure aligns roles with architectural layers to foster deep expertise while using a mandatory 
+                        code review process to ensure collaboration and shared knowledge.
+                    </p>
+                    
+                    <div class="grid lg:grid-cols-2 gap-12">
+                        <div>
+                            <h3 class="text-3xl font-bold text-slate-100 mb-8">Role-Splitting for a Duo</h3>
+                            <div class="space-y-8">
+                                <div class="premium-card p-8">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                            <span class="text-blue-400 text-xl">🎨</span>
+                                        </div>
+                                        <h4 class="font-bold text-xl text-blue-400">Developer 1: UI/UX Specialist</h4>
+                                    </div>
+                                    <p class="text-slate-400 text-sm mb-3">Primary Domain: Frontend</p>
+                                    <p class="text-slate-300 mb-6 leading-relaxed">
+                                        Responsible for building all React components, implementing design with Tailwind CSS, 
+                                        managing client-side state, and ensuring a responsive, performant user experience.
+                                    </p>
+                                    <div class="text-sm">
+                                        <strong class="text-slate-200">Key Technologies:</strong>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs">Next.js</span>
+                                            <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs">React</span>
+                                            <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs">TypeScript</span>
+                                            <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs">Tailwind CSS</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="premium-card p-8">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                            <span class="text-green-400 text-xl">⚙️</span>
+                                        </div>
+                                        <h4 class="font-bold text-xl text-green-400">Developer 2: Backend/AI Architect</h4>
+                                    </div>
+                                    <p class="text-slate-400 text-sm mb-3">Primary Domain: Backend, Database, AI, DevOps</p>
+                                    <p class="text-slate-300 mb-6 leading-relaxed">
+                                        Responsible for the database schema, authentication, AI microservice, Spotify API integration, 
+                                        and the entire deployment and CI/CD pipeline.
+                                    </p>
+                                    <div class="text-sm">
+                                        <strong class="text-slate-200">Key Technologies:</strong>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs">FastAPI</span>
+                                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs">PostgreSQL</span>
+                                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs">Docker</span>
+                                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs">AI/ML</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-3xl font-bold text-slate-100 mb-8">Professional Git Workflow</h3>
+                            <div class="premium-card p-8">
+                                <div class="space-y-6">
+                                    <div class="text-center">
+                                        <div class="inline-block bg-slate-700/50 px-6 py-3 rounded-xl font-semibold text-slate-200">
+                                            🌿 Main Branch (Production)
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center text-3xl text-slate-500">↓</div>
+                                    <div class="text-center">
+                                        <div class="inline-block bg-blue-500/20 text-blue-300 px-6 py-3 rounded-xl font-semibold">
+                                            🌿 Create Feature Branch
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center text-3xl text-slate-500">↓</div>
+                                    <div class="text-center">
+                                        <div class="inline-block bg-purple-500/20 text-purple-300 px-6 py-3 rounded-xl font-semibold">
+                                            💻 Commit Work
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center text-3xl text-slate-500">↓</div>
+                                    <div class="text-center">
+                                        <div class="inline-block bg-amber-500/20 text-amber-300 px-6 py-3 rounded-xl font-semibold">
+                                            📤 Open Pull Request (PR)
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center text-3xl text-slate-500">↓</div>
+                                    <div class="text-center">
+                                        <div class="inline-block bg-orange-500/20 text-orange-300 px-6 py-3 rounded-xl font-semibold">
+                                            👀 Mandatory Code Review
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center text-3xl text-slate-500">↓</div>
+                                    <div class="text-center">
+                                        <div class="inline-block bg-emerald-500/20 text-emerald-300 px-6 py-3 rounded-xl font-semibold">
+                                            ✅ Merge & Auto-Deploy
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-8 p-6 bg-slate-800/30 rounded-lg">
+                                    <h4 class="font-semibold text-slate-200 mb-3">Key Benefits:</h4>
+                                    <ul class="text-sm text-slate-300 space-y-2">
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-green-400">✓</span>
+                                            Prevents knowledge silos through cross-functional reviews
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-green-400">✓</span>
+                                            Maintains code quality with "second pair of eyes"
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-green-400">✓</span>
+                                            Ensures stable main branch for deployments
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-green-400">✓</span>
+                                            Creates clear audit trail of changes
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Section: Deployment -->
+                <section id="deployment" class="content-section">
+                    <h2 class="text-5xl font-bold text-slate-100 mb-6">Launch Sequence: Deployment & Automation</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        A modern deployment strategy emphasizes automation, reliability, and the use of specialized platforms 
+                        optimized for specific parts of the tech stack. This section details a "polyglot, multi-cloud" 
+                        deployment architecture unified by a single, automated CI/CD pipeline.
+                    </p>
+                    <div class="grid lg:grid-cols-2 gap-8 mb-12">
+                        <div class="premium-card p-8 hover:scale-105 transition-transform duration-300">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-14 h-14 bg-black rounded-xl flex items-center justify-center">
+                                    <span class="text-white font-bold text-xl">▲</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-slate-200">Frontend: Vercel</h3>
+                                    <p class="text-slate-400 text-sm">Next.js Deployment</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-300 mb-6 leading-relaxed">
+                                Vercel is purpose-built for Next.js applications with optimal performance and zero configuration. 
+                                Features automatic Edge Network optimization, SSR, and ISR support.
+                            </p>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                    <span class="text-green-400">✓</span>
+                                    <span class="text-slate-300">Automatic builds from Git</span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                    <span class="text-green-400">✓</span>
+                                    <span class="text-slate-300">Global CDN & Edge Functions</span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                    <span class="text-green-400">✓</span>
+                                    <span class="text-slate-300">Preview deployments for PRs</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="premium-card p-8 hover:scale-105 transition-transform duration-300">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center">
+                                    <span class="text-white font-bold text-xl">H</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-slate-200">Backend: Heroku</h3>
+                                    <p class="text-slate-400 text-sm">FastAPI Microservice</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-300 mb-6 leading-relaxed">
+                                Platform-as-a-Service with excellent Python support. Containerized FastAPI deployment 
+                                with easy scaling and managed infrastructure.
+                            </p>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                    <span class="text-green-400">✓</span>
+                                    <span class="text-slate-300">Docker container support</span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                    <span class="text-green-400">✓</span>
+                                    <span class="text-slate-300">Horizontal scaling (dynos)</span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                    <span class="text-green-400">✓</span>
+                                    <span class="text-slate-300">Managed databases & add-ons</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="premium-card p-8">
+                        <h3 class="text-2xl font-bold text-slate-200 mb-6">CI/CD Pipeline with GitHub Actions</h3>
+                        <p class="text-slate-300 mb-8 leading-relaxed">
+                            Unified deployment workflow that automatically deploys both frontend and backend on every push to main branch.
+                        </p>
+                        
+                        <div class="code-block p-6 overflow-x-auto">
+                            <div class="font-mono text-sm">
+                                <div class="text-slate-500 mb-3"># .github/workflows/deploy.yml</div>
+                                <div class="space-y-1">
+                                    <div><span class="text-blue-400">name:</span> <span class="text-green-300">Deploy Application</span></div>
+                                    <div><span class="text-blue-400">on:</span></div>
+                                    <div class="ml-4"><span class="text-blue-400">push:</span></div>
+                                    <div class="ml-8"><span class="text-blue-400">branches:</span> <span class="text-yellow-300">[main]</span></div>
+                                    <div class="mt-3"><span class="text-blue-400">jobs:</span></div>
+                                    <div class="ml-4 text-yellow-300">deploy-frontend:</div>
+                                    <div class="ml-8"><span class="text-blue-400">runs-on:</span> <span class="text-green-300">ubuntu-latest</span></div>
+                                    <div class="ml-8"><span class="text-blue-400">steps:</span></div>
+                                    <div class="ml-12 text-slate-300">- Checkout code</div>
+                                    <div class="ml-12 text-slate-300">- Deploy to Vercel</div>
+                                    <div class="ml-4 text-yellow-300 mt-2">deploy-backend:</div>
+                                    <div class="ml-8"><span class="text-blue-400">runs-on:</span> <span class="text-green-300">ubuntu-latest</span></div>
+                                    <div class="ml-8"><span class="text-blue-400">steps:</span></div>
+                                    <div class="ml-12 text-slate-300">- Build Docker image</div>
+                                    <div class="ml-12 text-slate-300">- Deploy to Heroku</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Section: Best Practices -->
+                <section id="best-practices" class="content-section">
+                    <h2 class="text-5xl font-bold text-slate-100 mb-6">Engineering Excellence</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        Building a functional application is the start. Ensuring its long-term health, security, 
+                        and maintainability requires a commitment to professional engineering best practices. 
+                        This section outlines critical principles and common beginner mistakes to avoid.
+                    </p>
+                    <div id="practices-accordion" class="space-y-6"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Tech Stack Modal -->
+    <div id="tech-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-6 z-50">
+        <div id="tech-modal-content" class="glass-effect rounded-2xl max-w-3xl w-full p-10 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
+    
+    <script>
+    // Application data
+    const appData = {
+        learningPath: [
+            {
+                category: 'Common Beginner Pitfalls to Avoid',
+                icon: '⚠️',
+                points: [
+                    {
+                        title: 'Tutorial Hell',
+                        description: 'Avoid endless tutorial consumption without building real projects. Focus on active learning.',
+                        implementation: 'Follow the phased roadmap, build while learning, apply concepts immediately'
+                    },
+                    {
+                        title: 'Copy-Paste Programming',
+                        description: 'Don\'t copy code without understanding. Treat external snippets as learning opportunities.',
+                        implementation: 'Read documentation, understand each line, experiment with modifications'
+                    },
+                    {
+                        title: 'Premature Optimization',
+                        description: 'Focus on functionality first, then optimize. Don\'t optimize without measuring performance.',
+                        implementation: 'Profile before optimizing, use built-in optimizations, measure improvements'
+                    },
+                    {
+                        title: 'Neglecting Error Handling',
+                        description: 'Implement proper error handling and user feedback from the beginning.',
+                        implementation: 'Try-catch blocks, error boundaries, user-friendly error messages, logging'
+                    }
+                ]
+            },
+            {
+                category: 'Core Fundamentals',
+                description: 'Essential foundational skills for web development',
+                skills: [
+                    'HTML, CSS, JavaScript basics',
+                    'Git & GitHub version control',
+                    'Command line fundamentals',
+                    'VS Code and developer tools'
+                ],
+                resources: [
+                    { name: 'The Odin Project - Foundations', url: 'https://theodinproject.com/paths/foundations/courses/foundations' },
+                    { name: 'freeCodeCamp - Responsive Web Design', url: 'https://freecodecamp.org/learn/responsive-web-design/' }
+                ],
+                duration: '2-3 weeks',
+                icon: '🏗️'
+            },
+            {
+                category: 'Frontend Development',
+                description: 'Modern React-based user interface development',
+                skills: [
+                    'React fundamentals (components, props, state, hooks)',
+                    'Next.js framework and routing',
+                    'Tailwind CSS for styling',
+                    'TypeScript for type safety'
+                ],
+                resources: [
+                    { name: 'Full Stack Open - Parts 1-2', url: 'https://fullstackopen.com/en/' },
+                    { name: 'Next.js Learn Portal', url: 'https://nextjs.org/learn' },
+                    { name: 'Official React Documentation', url: 'https://react.dev/learn' }
+                ],
+                duration: '3-4 weeks',
+                icon: '⚛️'
+            },
+            {
+                category: 'Backend & Database',
+                description: 'Server-side development and data management',
+                skills: [
+                    'Python fundamentals and syntax',
+                    'FastAPI web framework',
+                    'SQL and PostgreSQL database',
+                    'API design and REST principles'
+                ],
+                resources: [
+                    { name: 'FastAPI Official Tutorial', url: 'https://fastapi.tiangolo.com/tutorial/' },
+                    { name: 'PostgreSQL Tutorial', url: 'https://www.postgresqltutorial.com/' },
+                    { name: 'freeCodeCamp - Scientific Computing with Python', url: 'https://freecodecamp.org/learn/scientific-computing-with-python/' }
+                ],
+                duration: '3-4 weeks',
+                icon: '🗄️'
+            },
+            {
+                category: 'AI & Machine Learning',
+                description: 'Applied AI for sentiment analysis and recommendations',
+                skills: [
+                    'Data analysis with Pandas',
+                    'NLP and sentiment analysis',
+                    'Clustering algorithms with Scikit-learn',
+                    'Hugging Face Transformers library'
+                ],
+                resources: [
+                    { name: 'Hugging Face Course', url: 'https://huggingface.co/course' },
+                    { name: 'Scikit-learn Documentation', url: 'https://scikit-learn.org/stable/user_guide.html' },
+                    { name: 'freeCodeCamp - Data Analysis with Python', url: 'https://freecodecamp.org/learn/data-analysis-with-python/' }
+                ],
+                duration: '2-3 weeks',
+                icon: '🤖'
+            },
+            {
+                category: 'DevOps & Deployment',
+                description: 'Automation and production deployment',
+                skills: [
+                    'Docker containerization basics',
+                    'CI/CD with GitHub Actions',
+                    'Cloud deployment (Vercel, Heroku)',
+                    'Environment variables and secrets'
+                ],
+                resources: [
+                    { name: 'GitHub Actions Documentation', url: 'https://docs.github.com/en/actions' },
+                    { name: 'Docker Get Started', url: 'https://docs.docker.com/get-started/' },
+                    { name: 'Vercel Documentation', url: 'https://vercel.com/docs' }
+                ],
+                duration: '2-3 weeks',
+                icon: '🚀'
+            }
+        ],
+        
+        techStack: [
+            {
+                category: 'Frontend',
+                items: [
+                    { 
+                        name: 'Next.js 14+', 
+                        rationale: 'Primary web framework providing a production-ready React environment with routing, SSR, and performance optimizations out-of-the-box, reducing configuration overhead. Next.js offers file-system based routing, automatic code splitting, and built-in performance optimizations that would require significant manual configuration in a standard React app.',
+                        benefits: ['Zero-config setup', 'Built-in routing', 'SSR/SSG support', 'Automatic optimization'],
+                        learnMore: 'https://nextjs.org/docs'
+                    },
+                    { 
+                        name: 'TypeScript', 
+                        rationale: 'A superset of JavaScript that adds static typing. Drastically reduces bugs and improves developer experience through better autocompletion, refactoring capabilities, and code clarity. Essential for large applications and team collaboration.',
+                        benefits: ['Compile-time error detection', 'Better IDE support', 'Self-documenting code', 'Easier refactoring'],
+                        learnMore: 'https://www.typescriptlang.org/docs/'
+                    },
+                    { 
+                        name: 'Tailwind CSS', 
+                        rationale: 'A utility-first CSS framework for rapid UI development and consistent styling without writing custom CSS. Promotes component-based design and prevents CSS bloat through its purging mechanism.',
+                        benefits: ['Rapid prototyping', 'Consistent design system', 'No CSS specificity issues', 'Built-in responsive design'],
+                        learnMore: 'https://tailwindcss.com/docs'
+                    }
+                ]
+            },
+            {
+                category: 'Backend & Database',
+                items: [
+                    { 
+                        name: 'Supabase', 
+                        rationale: 'Primary Backend-as-a-Service (BaaS) providing a managed PostgreSQL database, user authentication, real-time subscriptions, and auto-generated APIs. Massively accelerates development by handling boilerplate infrastructure concerns.',
+                        benefits: ['Instant APIs', 'Built-in authentication', 'Real-time features', 'PostgreSQL power'],
+                        learnMore: 'https://supabase.com/docs'
+                    },
+                    { 
+                        name: 'PostgreSQL', 
+                        rationale: 'The underlying relational database chosen for its power in handling complex, relational queries and ensuring data integrity. Critical for EmoTrack\'s analytical features requiring complex JOINs and aggregations.',
+                        benefits: ['ACID compliance', 'Complex query support', 'JSON support', 'Extensible'],
+                        learnMore: 'https://www.postgresql.org/docs/'
+                    },
+                    { 
+                        name: 'FastAPI', 
+                        rationale: 'High-performance Python framework for building the dedicated AI microservice. Ideal for serving ML models due to its speed, async support, and automatic API documentation generation.',
+                        benefits: ['High performance', 'Automatic docs', 'Type validation', 'Async support'],
+                        learnMore: 'https://fastapi.tiangolo.com/'
+                    }
+                ]
+            },
+            {
+                category: 'AI & Machine Learning',
+                items: [
+                    { 
+                        name: 'Hugging Face Transformers', 
+                        rationale: 'For state-of-the-art sentiment analysis using pre-trained models. Provides powerful NLP capabilities in just a few lines of code, eliminating the need to train custom models from scratch.',
+                        benefits: ['Pre-trained models', 'Easy integration', 'State-of-the-art accuracy', 'Active community'],
+                        learnMore: 'https://huggingface.co/docs/transformers'
+                    },
+                    { 
+                        name: 'Scikit-learn', 
+                        rationale: 'Industry-standard Python library for classical machine learning. Used for the music mood clustering feature, providing robust implementations of clustering algorithms like K-Means.',
+                        benefits: ['Battle-tested algorithms', 'Excellent documentation', 'Sklearn ecosystem', 'Performance optimized'],
+                        learnMore: 'https://scikit-learn.org/stable/'
+                    },
+                    { 
+                        name: 'Pandas', 
+                        rationale: 'Essential Python library for data manipulation and analysis. Critical for preparing music feature data for the clustering algorithm and general data preprocessing tasks.',
+                        benefits: ['Powerful data structures', 'Data cleaning tools', 'CSV/JSON support', 'Statistical functions'],
+                        learnMore: 'https://pandas.pydata.org/docs/'
+                    }
+                ]
+            },
+            {
+                category: 'DevOps & APIs',
+                items: [
+                    { 
+                        name: 'NextAuth.js', 
+                        rationale: 'Comprehensive authentication library for Next.js simplifying the implementation of complex OAuth flows, especially for Spotify. Handles token management, session storage, and security best practices.',
+                        benefits: ['Multiple providers', 'Secure by default', 'Session management', 'TypeScript support'],
+                        learnMore: 'https://next-auth.js.org/getting-started/introduction'
+                    },
+                    { 
+                        name: 'Spotify Web API', 
+                        rationale: 'The source for all music-related data, including track audio features for mood clustering and user playlist information. Provides rich metadata about songs including valence, energy, and danceability.',
+                        benefits: ['Rich music metadata', 'Audio features', 'Playlist management', 'User data access'],
+                        learnMore: 'https://developer.spotify.com/documentation/web-api/'
+                    },
+                    { 
+                        name: 'Vercel', 
+                        rationale: 'Deployment platform for the Next.js frontend offering seamless, zero-configuration experience with unmatched performance optimizations and global CDN.',
+                        benefits: ['Zero-config deployment', 'Global CDN', 'Preview deployments', 'Built-in analytics'],
+                        learnMore: 'https://vercel.com/docs'
+                    },
+                    { 
+                        name: 'Heroku', 
+                        rationale: 'Deployment platform for the FastAPI AI microservice providing a simple way to deploy and scale containerized Python applications with managed infrastructure.',
+                        benefits: ['Easy scaling', 'Managed infrastructure', 'Add-on ecosystem', 'Git-based deployment'],
+                        learnMore: 'https://devcenter.heroku.com/'
+                    },
+                    { 
+                        name: 'GitHub Actions', 
+                        rationale: 'CI/CD platform for automating the entire build, test, and deployment pipeline for both frontend and backend services. Integrates seamlessly with the GitHub workflow.',
+                        benefits: ['GitHub integration', 'Parallel jobs', 'Extensive marketplace', 'Free for public repos'],
+                        learnMore: 'https://docs.github.com/en/actions'
+                    }
+                ]
+            }
+        ],
+        
+        roadmap: [
+            { 
+                id: 0, 
+                title: 'Phase 0: Skill Acquisition', 
+                duration: 2, 
+                objective: 'Ensure both team members have the foundational skills and a consistent development environment.',
+                deliverable: 'A shared knowledge base and fully configured local development environments.',
+                keyTasks: [
+                    'Complete foundational learning modules (HTML, CSS, JavaScript)',
+                    'Set up development tools (VS Code, Node.js, Python, Git)',
+                    'Create GitHub accounts and project repositories',
+                    'Set up Supabase, Vercel, and Spotify Developer accounts',
+                    'Establish team communication channels and project management'
+                ],
+                technologies: ['Git', 'GitHub', 'VS Code', 'Node.js', 'Python'],
+                challenges: ['Avoiding tutorial hell', 'Time management', 'Consistent learning pace'],
+                success_criteria: ['Both developers can create basic web pages', 'Git workflow understood', 'All accounts created']
+            },
+            { 
+                id: 1, 
+                title: 'Phase 1: Scaffolding & Auth', 
+                duration: 1, 
+                objective: 'Create the basic application structure and implement a complete user authentication flow.',
+                deliverable: 'A functional app shell where users can sign up, log in, and view a protected profile page.',
+                keyTasks: [
+                    'Initialize Next.js project with TypeScript',
+                    'Integrate Tailwind CSS for styling',
+                    'Set up Supabase project and basic schema',
+                    'Configure NextAuth.js with email and Spotify providers',
+                    'Build login, signup, and profile pages',
+                    'Implement protected route middleware'
+                ],
+                technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'NextAuth.js'],
+                challenges: ['OAuth flow complexity', 'Environment variable management', 'Route protection'],
+                success_criteria: ['Users can register and login', 'Spotify OAuth working', 'Protected pages secured']
+            },
+            { 
+                id: 2, 
+                title: 'Phase 2: EmoTrack MVP', 
+                duration: 2, 
+                objective: 'Implement the core mood logging, journaling, and tracking functionality.',
+                deliverable: 'Users can log their daily mood and view their emotional history on a dashboard.',
+                keyTasks: [
+                    'Design mood_logs database schema in Supabase',
+                    'Build mood entry form with rating scale and journal input',
+                    'Implement API routes for saving mood data',
+                    'Create dashboard with mood history visualization',
+                    'Add basic charts using Chart.js or similar',
+                    'Implement data filtering and date range selection'
+                ],
+                technologies: ['Next.js', 'Supabase', 'Chart.js', 'PostgreSQL'],
+                challenges: ['Database schema design', 'Data visualization', 'Form validation'],
+                success_criteria: ['Mood logging functional', 'Data persists correctly', 'Dashboard displays trends']
+            },
+            { 
+                id: 3, 
+                title: 'Phase 3: Basic EchoMind AI', 
+                duration: 2, 
+                objective: 'Connect to the Spotify API and provide basic, non-personalized music recommendations.',
+                deliverable: 'Users can browse curated playlists within the app.',
+                keyTasks: [
+                    'Use Spotify token from NextAuth.js to call Web API',
+                    'Create curated mood-based playlists on Spotify',
+                    'Build UI to display playlist categories',
+                    'Implement playlist browsing and track listing',
+                    'Add basic music player integration',
+                    'Handle API rate limiting and errors'
+                ],
+                technologies: ['Next.js', 'Spotify Web API', 'NextAuth.js'],
+                challenges: ['API rate limits', 'Token refresh handling', 'Music player integration'],
+                success_criteria: ['Spotify integration working', 'Playlists display correctly', 'Basic music browsing']
+            },
+            { 
+                id: 4, 
+                title: 'Phase 4: Advanced AI', 
+                duration: 3, 
+                objective: 'Implement the sentiment analysis and personalized music recommendation engine.',
+                deliverable: 'Journal entries are tagged with sentiment. Users receive personalized music recommendations.',
+                keyTasks: [
+                    'Set up FastAPI microservice with Docker',
+                    'Implement sentiment analysis endpoint with Hugging Face',
+                    'Integrate sentiment analysis into journal feature',
+                    'Develop music clustering algorithm with Scikit-learn',
+                    'Create personalized recommendation engine',
+                    'Build recommendation API endpoints'
+                ],
+                technologies: ['FastAPI', 'Python', 'Hugging Face', 'Scikit-learn', 'Docker'],
+                challenges: ['ML model integration', 'Data preprocessing', 'Algorithm tuning'],
+                success_criteria: ['Sentiment analysis working', 'Clustering algorithm functional', 'Personalized recommendations']
+            },
+            { 
+                id: 5, 
+                title: 'Phase 5: Polish & Testing', 
+                duration: 1, 
+                objective: 'Refine the UI/UX, ensure stability, and implement a testing strategy.',
+                deliverable: 'A stable, polished, and tested application ready for its first users.',
+                keyTasks: [
+                    'Conduct thorough manual testing of all features',
+                    'Add loading states and error handling',
+                    'Implement responsive design improvements',
+                    'Add subtle animations and micro-interactions',
+                    'Write unit tests for critical backend logic',
+                    'Perform security audit and vulnerability assessment'
+                ],
+                technologies: ['Jest', 'Pytest', 'React Testing Library', 'Lighthouse'],
+                challenges: ['Comprehensive testing', 'Performance optimization', 'Cross-browser compatibility'],
+                success_criteria: ['All features tested', 'Performance optimized', 'Security validated']
+            },
+            { 
+                id: 6, 
+                title: 'Phase 6: Deployment & CI/CD', 
+                duration: 1, 
+                objective: 'Deploy all application components and create a fully automated deployment pipeline.',
+                deliverable: 'The full application is live. New changes are deployed automatically.',
+                keyTasks: [
+                    'Deploy Next.js frontend to Vercel',
+                    'Containerize and deploy FastAPI to Heroku',
+                    'Configure environment variables for production',
+                    'Set up GitHub Actions CI/CD pipeline',
+                    'Implement automated testing in CI',
+                    'Configure monitoring and logging'
+                ],
+                technologies: ['Vercel', 'Heroku', 'Docker', 'GitHub Actions'],
+                challenges: ['Environment configuration', 'Pipeline automation', 'Production debugging'],
+                success_criteria: ['Application deployed', 'CI/CD pipeline working', 'Monitoring active']
+            }
+        ],
+        
+        bestPractices: [
+            {
+                title: 'Application & API Security (OWASP)',
+                icon: '🛡️',
+                points: [
+                    {
+                        title: 'Secure Communication',
+                        description: 'Always use HTTPS for all communication between client and servers. Vercel and Heroku automatically provision SSL certificates.',
+                        implementation: 'Configure HTTPS redirects, use secure cookies, implement HSTS headers'
+                    },
+                    {
+                        title: 'Input Validation & Sanitization',
+                        description: 'Perform robust validation on both frontend and backend using FastAPI/Pydantic for automatic request validation.',
+                        implementation: 'Use Pydantic models, implement client-side validation, sanitize all user inputs'
+                    },
+                    {
+                        title: 'Authentication & Authorization',
+                        description: 'Implement strong authorization using Supabase Row Level Security (RLS) to prevent data leaks between users.',
+                        implementation: 'Configure RLS policies, use JWT tokens, implement proper session management'
+                    },
+                    {
+                        title: 'Secrets Management',
+                        description: 'Never commit secrets (API keys, tokens) to Git. Use environment variables and secure secret storage.',
+                        implementation: 'Use .env.local files, configure Vercel/Heroku environment variables, rotate secrets regularly'
+                    }
+                ]
+            },
+            {
+                title: 'Scalable Architecture Principles',
+                icon: '📈',
+                points: [
+                    {
+                        title: 'Stateless Backend Services',
+                        description: 'Design stateless services to allow easy horizontal scaling. Store session data in databases, not in memory.',
+                        implementation: 'Use JWT tokens, avoid server-side sessions, design for multiple instances'
+                    },
+                    {
+                        title: 'Asynchronous Operations',
+                        description: 'Use async/await for I/O tasks to handle more concurrent users with better resource utilization.',
+                        implementation: 'FastAPI async endpoints, database connection pooling, non-blocking API calls'
+                    },
+                    {
+                        title: 'Database Optimization',
+                        description: 'Create indexes on frequently queried columns and optimize query performance for scale.',
+                        implementation: 'Index user_id columns, use query optimization, implement proper pagination'
+                    },
+                    {
+                        title: 'Caching Strategy',
+                        description: 'Implement caching at multiple levels to reduce database load and improve response times.',
+                        implementation: 'Redis caching, CDN caching, API response caching, client-side caching'
+                    }
+                ]
+            },
+            {
+                title: 'Development Best Practices',
+                icon: '💻',
+                points: [
+                    {
+                        title: 'Code Quality & Standards',
+                        description: 'Maintain consistent code style, use linting tools, and follow established conventions.',
+                        implementation: 'ESLint, Prettier, TypeScript strict mode, code formatting automation'
+                    },
+                    {
+                        title: 'Version Control Workflow',
+                        description: 'Use feature branches, meaningful commit messages, and mandatory code reviews.',
+                        implementation: 'Git flow, PR templates, commit message conventions, branch protection rules'
+                    },
+                    {
+                        title: 'Testing Strategy',
+                        description: 'Implement comprehensive testing including unit, integration, and end-to-end tests.',
+                        implementation: 'Jest for unit tests, Pytest for backend, Playwright for E2E testing'
+                    },
+                    {
+                        title: 'Documentation',
+                        description: 'Maintain clear documentation for setup, deployment, and API endpoints.',
+                        implementation: 'README files, API documentation, code comments, architectural decisions'
+                    }
+                ]
+            },
+            {
+                title: 'User Experience & Performance',
+                icon: '🚀',
+                points: [
+                    {
+                        title: 'Performance Optimization',
+                        description: 'Optimize for fast loading times and smooth interactions. Performance directly impacts user retention.',
+                        implementation: 'Code splitting, image optimization, lazy loading, performance monitoring'
+                    },
+                    {
+                        title: 'Responsive Design',
+                        description: 'Ensure the application works well across all device sizes. Mobile-first approach is recommended.',
+                        implementation: 'Responsive breakpoints, touch-friendly UI, flexible layouts, mobile testing'
+                    },
+                    {
+                        title: 'Accessibility (a11y)',
+                        description: 'Build inclusive applications that work for users with disabilities. This is both ethical and expands your user base.',
+                        implementation: 'Semantic HTML, ARIA attributes, keyboard navigation, color contrast'
+                    },
+                    {
+                        title: 'Progressive Enhancement',
+                        description: 'Ensure core functionality works without JavaScript, then enhance with JavaScript capabilities.',
+                        implementation: 'Server-rendered fallbacks, feature detection, graceful degradation'
+                    }
+                ]
+            }
+        ]
+    };
+    
+    // DOM elements
+    const sidebarNav = document.getElementById('sidebar-nav');
+    const contentSections = document.querySelectorAll('.content-section');
+    const techStackContainer = document.getElementById('tech-stack-container');
+    const techModal = document.getElementById('tech-modal');
+    const techModalContent = document.getElementById('tech-modal-content');
+    const learningPathContainer = document.getElementById('learning-path-container');
+    const roadmapList = document.getElementById('roadmap-list');
+    const roadmapDetails = document.getElementById('roadmap-details');
+    const practicesAccordion = document.getElementById('practices-accordion');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const scrollProgress = document.getElementById('scroll-progress');
+    
+    let roadmapChartInstance = null;
+    
+    // Initialize application
+    function init() {
+        setupEventListeners();
+        renderLearningPath();
+        renderTechStack();
+        renderRoadmap();
+        renderBestPractices();
+        
+        // Set initial section
+        const initialSection = window.location.hash.substring(1) || 'overview';
+        navigateToSection(initialSection);
+    }
+    
+    // Event listeners setup
+    function setupEventListeners() {
+        // Sidebar navigation
+        sidebarNav.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (link) {
+                e.preventDefault();
+                navigateToSection(link.dataset.section);
+            }
+        });
+        
+        // Mobile menu
+        mobileMenuBtn.addEventListener('click', function() {
+            sidebar.classList.add('open');
+            overlay.classList.remove('hidden');
+        });
+        
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.add('hidden');
+        });
+        
+        // Tech modal
+        techModal.addEventListener('click', function(e) {
+            if (e.target === techModal) {
+                closeTechModal();
+            }
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTechModal();
+                sidebar.classList.remove('open');
+                overlay.classList.add('hidden');
+            }
+        });
+        
+        // Scroll progress
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight;
+            const winHeight = window.innerHeight;
+            const scrollPercent = scrollTop / (docHeight - winHeight);
+            const scrollPercentRounded = Math.round(scrollPercent * 100);
+            scrollProgress.style.width = scrollPercentRounded + '%';
+        });
+    }
+    
+    // Navigation function
+    function navigateToSection(sectionId) {
+        contentSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+        
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.section === sectionId) {
+                link.classList.add('active');
+            }
+        });
+        
+        // Close mobile menu
+        sidebar.classList.remove('open');
+        overlay.classList.add('hidden');
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // Tech modal functions
+    function showTechModal(techItem) {
+        techModalContent.innerHTML = `
+            <button class="absolute top-6 right-6 text-slate-400 hover:text-slate-200 text-3xl font-bold w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-700/50 transition-colors" onclick="closeTechModal()">&times;</button>
+            <div class="pr-12">
+                <h3 class="text-4xl font-bold text-blue-400 mb-6">${techItem.name}</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-semibold text-slate-200 text-lg mb-3">Why This Technology?</h4>
+                        <p class="text-slate-300 leading-relaxed">${techItem.rationale}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-slate-200 text-lg mb-3">Key Benefits:</h4>
+                        <ul class="space-y-2">
+                            ${techItem.benefits.map(benefit => `
+                                <li class="flex items-center gap-3 text-slate-300">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                                    ${benefit}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    <div class="pt-6 border-t border-slate-700">
+                        <a href="${techItem.learnMore}" target="_blank" class="inline-flex items-center gap-3 premium-gradient text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300">
+                            Learn More
+                            <span class="text-sm">↗</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        techModal.classList.remove('hidden');
+        techModal.classList.add('flex');
+    }
+    
+    function closeTechModal() {
+        techModal.classList.add('hidden');
+        techModal.classList.remove('flex');
+    }
+    
+    // Render functions
+    function renderLearningPath() {
+        let html = '';
+        appData.learningPath.forEach((step, index) => {
+            if (step.points) {
+                html += `
+                    <div class="relative mb-16">
+                        <div class="absolute -left-[58px] top-2 w-12 h-12 glass-effect border-4 border-amber-500 rounded-full flex items-center justify-center shadow-lg">
+                            <span class="text-lg font-bold text-amber-400">${step.icon}</span>
+                        </div>
+                        <div class="premium-card p-8">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">${step.icon}</span>
+                                <div>
+                                    <h3 class="font-bold text-2xl text-slate-100">${step.category}</h3>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                ${step.points.map(point => `
+                                    <div class="bg-slate-800/30 p-5 rounded-lg">
+                                        <h4 class="font-semibold text-slate-200 text-lg mb-2">${point.title}</h4>
+                                        <p class="text-slate-300 mb-3">${point.description}</p>
+                                        <div class="bg-slate-700/30 p-3 rounded-lg border-l-4 border-blue-500/50">
+                                            <p class="text-sm text-slate-400">
+                                                <strong class="text-slate-300">Implementation:</strong> ${point.implementation}
+                                            </p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="relative mb-16">
+                        <div class="absolute -left-[58px] top-2 w-12 h-12 glass-effect border-4 border-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                            <span class="text-lg font-bold text-blue-400">${index}</span>
+                        </div>
+                        <div class="premium-card p-8">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">${step.icon}</span>
+                                <div>
+                                    <h3 class="font-bold text-2xl text-slate-100">${step.category}</h3>
+                                    <p class="text-sm text-slate-400">${step.duration}</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-300 mb-6 leading-relaxed">${step.description}</p>
+                            <div class="mb-6">
+                                <h4 class="font-semibold text-slate-200 mb-3">Key Skills:</h4>
+                                <ul class="space-y-2">
+                                    ${step.skills.map(skill => `
+                                        <li class="flex items-center gap-3 text-slate-300">
+                                            <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                                            ${skill}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-200 mb-3">Recommended Resources:</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    ${step.resources.map(resource => `
+                                        <a href="${resource.url}" target="_blank" class="inline-flex items-center gap-2 text-sm bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full hover:bg-blue-500/30 transition-colors">
+                                            ${resource.name}
+                                            <span class="text-xs">↗</span>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        learningPathContainer.innerHTML = html;
+    }
+    
+    function renderTechStack() {
+        let html = '';
+        appData.techStack.forEach(category => {
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold text-slate-100 mb-8 flex items-center gap-3">
+                        <span class="w-2 h-10 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+                        ${category.category}
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${category.items.map(item => `
+                            <div class="tech-card premium-card p-8 cursor-pointer" onclick="showTechModal(appData.techStack.flatMap(c => c.items).find(i => i.name === '${item.name}'))">
+                                <h4 class="font-bold text-xl text-slate-100 mb-3">${item.name}</h4>
+                                <p class="text-slate-300 text-sm mb-4 leading-relaxed">${item.rationale.substring(0, 120)}...</p>
+                                <div class="flex items-center gap-2 text-blue-400 text-sm font-medium">
+                                    <span>Click to learn more</span>
+                                    <span>→</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+        techStackContainer.innerHTML = html;
+    }
+    
+    function renderRoadmap() {
+        const ctx = document.getElementById('roadmap-chart');
+        if (!ctx) return;
+        
+        // Chart.js configuration with dark theme
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+        
+        const labels = appData.roadmap.map(p => p.title.replace('Phase ', 'P'));
+        const durations = appData.roadmap.map(p => p.duration);
+        
+        roadmapChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Duration (Weeks)',
+                    data: durations,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        display: false 
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 26, 46, 0.95)',
+                        titleColor: '#e2e8f0',
+                        bodyColor: '#94a3b8',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                const phase = appData.roadmap[context.dataIndex];
+                                return ` ${phase.title}: ${phase.duration} week(s)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: { 
+                            display: true, 
+                            text: 'Timeline (Weeks)',
+                            font: { size: 14, weight: 'bold' },
+                            color: '#94a3b8'
+                        },
+                        grid: { 
+                            color: 'rgba(51, 65, 85, 0.3)' 
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        ticks: { 
+                            autoSkip: false,
+                            font: { size: 12 },
+                            color: '#94a3b8'
+                        },
+                        grid: { 
+                            display: false 
+                        }
+                    }
+                },
+                onClick: function(evt, activeElements) {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        displayRoadmapDetails(index);
+                    }
+                }
+            }
+        });
+        
+        // Render phase buttons
+        let buttonsHtml = '';
+        appData.roadmap.forEach(phase => {
+            buttonsHtml += `
+                <button class="phase-button roadmap-phase-btn w-full text-left p-6 rounded-xl premium-card hover:scale-105 transition-all duration-300" onclick="displayRoadmapDetails(${phase.id})">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 font-bold">
+                            ${phase.id}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-slate-200">${phase.title}</h4>
+                            <p class="text-xs text-slate-400">${phase.duration} week(s)</p>
+                        </div>
+                    </div>
+                </button>
+            `;
+        });
+        roadmapList.innerHTML = buttonsHtml;
+        
+        // Display first phase by default
+        displayRoadmapDetails(0);
+    }
+    
+    function displayRoadmapDetails(phaseId) {
+        const phase = appData.roadmap.find(p => p.id === phaseId);
+        if (!phase) return;
+        
+        roadmapDetails.innerHTML = `
+            <div class="space-y-8">
+                <div class="border-b border-slate-700 pb-6">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="w-14 h-14 premium-gradient rounded-xl flex items-center justify-center text-white font-bold text-xl">
+                            ${phase.id}
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-bold text-slate-100">${phase.title}</h3>
+                            <p class="text-slate-400 font-medium">${phase.duration} week(s) duration</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-xl text-slate-200 mb-3 flex items-center gap-2">
+                        🎯 Objective
+                    </h4>
+                    <p class="text-slate-300 leading-relaxed">${phase.objective}</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-xl text-slate-200 mb-4 flex items-center gap-2">
+                        ✅ Key Tasks
+                    </h4>
+                    <ul class="space-y-3">
+                        ${phase.keyTasks.map(task => `
+                            <li class="flex items-start gap-4 p-3 bg-slate-800/30 rounded-lg">
+                                <span class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
+                                <span class="text-slate-300">${task}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-xl text-slate-200 mb-3 flex items-center gap-2">
+                        🛠️ Technologies
+                    </h4>
+                    <div class="flex flex-wrap gap-3">
+                        ${phase.technologies.map(tech => `
+                            <span class="bg-slate-700/50 text-slate-300 px-4 py-2 rounded-full text-sm">${tech}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-xl text-slate-200 mb-3 flex items-center gap-2">
+                        🚀 Deliverable
+                    </h4>
+                    <div class="bg-green-900/20 border border-green-700/50 p-6 rounded-lg">
+                        <p class="text-green-300 font-medium leading-relaxed">${phase.deliverable}</p>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            ⚠️ Challenges
+                        </h4>
+                        <ul class="space-y-2">
+                            ${phase.challenges.map(challenge => `
+                                <li class="text-sm text-amber-300 bg-amber-900/20 px-3 py-2 rounded-lg">${challenge}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            🎉 Success Criteria
+                        </h4>
+                        <ul class="space-y-2">
+                            ${phase.success_criteria.map(criteria => `
+                                <li class="text-sm text-green-300 bg-green-900/20 px-3 py-2 rounded-lg">${criteria}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Update selected phase button
+        document.querySelectorAll('.phase-button').forEach(btn => {
+            btn.classList.remove('selected');
+            if (parseInt(btn.querySelector('.font-bold').textContent, 10) === phaseId) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+    
+    function renderBestPractices() {
+        let html = '';
+        appData.bestPractices.forEach((practice, index) => {
+            html += `
+                <div class="premium-card overflow-hidden">
+                    <button class="accordion-toggle w-full flex justify-between items-center p-8 text-left hover:bg-slate-800/30 transition-colors" onclick="toggleAccordion(${index})">
+                        <div class="flex items-center gap-6">
+                            <span class="text-3xl">${practice.icon}</span>
+                            <h3 class="text-2xl font-bold text-slate-100">${practice.title}</h3>
+                        </div>
+                        <span class="accordion-arrow text-3xl text-slate-400 transition-transform transform">+</span>
+                    </button>
+                    <div class="accordion-content px-8 pb-0 max-h-0 overflow-hidden transition-all duration-500" id="accordion-${index}">
+                        <div class="pb-8">
+                            ${practice.points.map(point => `
+                                <div class="mb-8 last:mb-0">
+                                    <div class="flex items-start gap-4 mb-3">
+                                        <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-slate-200 text-lg mb-2">${point.title}</h4>
+                                            <p class="text-slate-300 mb-4 leading-relaxed">${point.description}</p>
+                                            <div class="bg-slate-800/50 p-4 rounded-lg border-l-4 border-blue-500/50">
+                                                <p class="text-sm text-slate-400">
+                                                    <strong class="text-slate-300">Implementation:</strong> ${point.implementation}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        practicesAccordion.innerHTML = html;
+    }
+    
+    function toggleAccordion(index) {
+        const content = document.getElementById(`accordion-${index}`);
+        const arrow = content.previousElementSibling.querySelector('.accordion-arrow');
+        const isOpen = content.classList.contains('open');
+        
+        // Close all other accordions
+        document.querySelectorAll('.accordion-content').forEach(c => {
+            if (c !== content) {
+                c.classList.remove('open');
+                c.previousElementSibling.querySelector('.accordion-arrow').textContent = '+';
+            }
+        });
+        
+        // Toggle current accordion
+        if (isOpen) {
+            content.classList.remove('open');
+            arrow.textContent = '+';
+        } else {
+            content.classList.add('open');
+            arrow.textContent = '−';
+        }
+    }
+    
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
